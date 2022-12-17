@@ -307,7 +307,7 @@ sadMat<T> &sadMat<T>::operator-=(const sadMat &m) {
             return *this;
         }
     }
-    
+
 }
 
 
@@ -385,12 +385,12 @@ sadMat<T> &sadMat<T>::operator*=(const sadMat &m) {
 template<typename T>
 T sadMat<T>::get(size_t targetRow, size_t targetCol) {
     try{
-        if (targetRow>row||targetCol>col){
+        if (targetRow>=row||targetCol>=col){
             throw "Data is out of range at :";
         }
     } catch (const char* e) {
-        cerr<< e <<" At:" <<__FILE__<<":"<<__FUNCTION__ <<":"<<__LINE__<<"The target row is :"<<targetRow<<"the bound is :"<<row
-        <<" The target column is :"<<targetCol<<"the bound is :"<<col<<endl;
+        cerr<< e <<" At:" <<__FILE__<<":"<<__FUNCTION__ <<":"<<__LINE__<<" The target row is :"<<targetRow<<" the bound is :"<<row-1
+            <<" The target column is :"<<targetCol<<" the bound is :"<<col-1<<endl;
         return NULL;
     }
     return data[targetRow*fatherCol+targetCol];
@@ -405,13 +405,10 @@ bool sadMat<T>::set(size_t targetRow, size_t targetCol, T num) {
             throw "Data is out of range at :";
         }
     } catch (const char* e) {
-        cerr<< e <<" At:" <<__FILE__<<":"<<__FUNCTION__ <<":"<<__LINE__<<"The target row is :"<<targetRow<<" The bound is :"<<row
-            <<" The target column is :"<<targetCol<<" The bound is :"<<col<<endl;
+        cerr<< e <<" At:" <<__FILE__<<":"<<__FUNCTION__ <<":"<<__LINE__<<"The target row is :"<<targetRow<<" The bound is :"<<row-1
+            <<" The target column is :"<<targetCol<<" The bound is :"<<col-1<<endl;
         return false;
     }
     data[targetRow*fatherCol+targetCol] = num;
     return true;
 }
-
-
-
