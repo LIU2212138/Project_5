@@ -2,7 +2,7 @@
 // Created by 86187 on 2022/12/17.
 //
 #include "iostream"
-#include "sadMat.cpp"
+#include "sadMat.h"
 
 using namespace std;
 int main(){
