@@ -6,6 +6,8 @@
 #include <iostream>
 using namespace std;
 template<typename T>
+
+//*****构造函数********************************************************************************************
 sadMat<T>::sadMat() {
     if (this!= nullptr){
         release();
@@ -34,6 +36,7 @@ sadMat<T>::sadMat(size_t rows, size_t cols, bool random) {
     }
 }
 
+//********************************用来把常量隐式转换成矩阵用于计算******************************************
 template<typename T>
 sadMat<T>::sadMat(T scalar) {
     row = 1;
@@ -43,6 +46,7 @@ sadMat<T>::sadMat(T scalar) {
     addref();
 }
 
+//********************************复制构造函数**************************************************************
 template<typename T>
 template<typename T1>
 sadMat<T>::sadMat(const sadMat<T1> &m) {
@@ -59,7 +63,9 @@ sadMat<T>::sadMat(const sadMat<T1> &m) {
     refCount = m.refCount;
     *refCount = *refCount+1;
 }
-//ROI用的构造函数
+
+
+//********************************ROI用的构造函数**********************************************************
 template<typename T>
 sadMat<T>::sadMat(const sadMat &m, size_t startRow, size_t endRow, size_t startCol, size_t endCol) {
 
@@ -77,6 +83,7 @@ sadMat<T>::sadMat(const sadMat &m, size_t startRow, size_t endRow, size_t startC
     *refCount = *refCount+1;
 }
 
+//********************************增加计数******************************************************************
 template<typename T>
 void sadMat<T>::addref() {
     if(refCount!= nullptr) {
@@ -87,6 +94,7 @@ void sadMat<T>::addref() {
     }
 }
 
+//********************************创建矩阵与申请空间*********************************************************
 template<typename T>
 void sadMat<T>::create(size_t rowNum, size_t colNum) {
     row = rowNum;
@@ -105,6 +113,8 @@ void sadMat<T>::create(size_t rowNum, size_t colNum) {
     offerSet = fatherCol-col;
 }
 
+
+//********************************释放空间******************************************************************
 template<typename T>
 bool sadMat<T>::release() {
 
@@ -132,12 +142,16 @@ bool sadMat<T>::release() {
     }
 }
 
+
+//********************************析构函数****************************************************************
 template<typename T>
 sadMat<T>::~sadMat() {
     cout<<"refCount: " <<*refCount<<endl;
     release();
 }
 
+
+//********************************用来把常量隐式转换成矩阵用于计算****************************************
 template<typename T>
 void sadMat<T>::printMat() {
     size_t current = 0;
@@ -155,6 +169,8 @@ void sadMat<T>::printMat() {
     }
 }
 
+
+//********************************重载等于号（=）*********************************************************
 template<typename T>
 sadMat<T>& sadMat<T>::operator=(const sadMat &m) {
     if(*this == *&m){
@@ -175,6 +191,8 @@ sadMat<T>& sadMat<T>::operator=(const sadMat &m) {
     return *this;
 }
 
+
+//********************************重载等于号（==）*********************************************************
 template<typename T>
 template<typename T1>
 bool sadMat<T>::operator==(const sadMat<T1> &m) const {
@@ -193,6 +211,8 @@ bool sadMat<T>::operator==(const sadMat<T1> &m) const {
     return true;
 }
 
+
+//********************************重载不等号（！=）*********************************************************
 template<typename T>
 template<typename T1>
 bool sadMat<T>::operator!=(const sadMat<T1> &m) const {
@@ -208,6 +228,9 @@ bool sadMat<T>::operator!=(const sadMat<T1> &m) const {
     return false;
 }
 
+
+
+//********************************重载运算符（+=）*********************************************************
 template<typename T>
 sadMat<T> &sadMat<T>::operator+=(const sadMat &m) {
     if (m.row == 1 && m.col==1){
@@ -245,6 +268,8 @@ sadMat<T> &sadMat<T>::operator+=(const sadMat &m) {
     }
 }
 
+
+//********************************重载运算符（-=）*********************************************************
 template<typename T>
 sadMat<T> &sadMat<T>::operator-=(const sadMat &m) {
     if (m.row == 1 && m.col==1){
@@ -282,8 +307,12 @@ sadMat<T> &sadMat<T>::operator-=(const sadMat &m) {
             return *this;
         }
     }
+    
 }
 
+
+
+//********************************重载运算符（*=）*********************************************************
 template<typename T>
 sadMat<T> &sadMat<T>::operator*=(const sadMat &m) {
     if (m.row==1&&m.col==1){
@@ -351,6 +380,8 @@ sadMat<T> &sadMat<T>::operator*=(const sadMat &m) {
     }
 }
 
+
+//********************************获取特定位置元素*********************************************************
 template<typename T>
 T sadMat<T>::get(size_t targetRow, size_t targetCol) {
     try{
@@ -365,6 +396,8 @@ T sadMat<T>::get(size_t targetRow, size_t targetCol) {
     return data[targetRow*fatherCol+targetCol];
 }
 
+
+//********************************为特定位置赋值***********************************************************
 template<typename T>
 bool sadMat<T>::set(size_t targetRow, size_t targetCol, T num) {
     try{
@@ -381,120 +414,4 @@ bool sadMat<T>::set(size_t targetRow, size_t targetCol, T num) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-//template<typename T,typename T2>
-//sadMat<T> &operator+(const sadMat<T> &m1, const sadMat<T2> &m2) {
-//    if(m1.row==1&&m1.col==1){
-//        sadMat<T> result = new sadMat<T>(m2.row,m2.col);
-//        for (int i = 0; i < m2.row*m2.col; ++i) {
-//            result.data[i] = m2.data[i]+m1.data[0];
-//        }
-//        return *result;
-//    } else if (m2.row==1&&m2.col==1){
-//        sadMat<T> result = new sadMat<T>(m1.row,m1.col);
-//        for (int i = 0; i < m1.row*m1.col; ++i) {
-//            result.data[i] = m2.data[0]+m1.data[i];
-//        }
-//        return *result;
-//    } else if (m1.row == m2.row && m1.col == m2.col){
-//        sadMat<T> result = new sadMat<T>(m1.row,m1.col);
-//        for (int i = 0; i < m1.row*m1.col; ++i) {
-//            result.data[i] = m2.data[i]+m1.data[i];
-//        }
-//        return *result;
-//    } else{
-//        return NULL;
-//    }
-//}
-
-//template<typename T,typename T2>
-//sadMat<T> &operator-(const sadMat<T> &m1, const sadMat<T2> &m2) {
-//    if(m1.row==1&&m1.col==1){
-//        sadMat<T> result = new sadMat<T>(m2.row,m2.col);
-//        for (int i = 0; i < m2.row*m2.col; ++i) {
-//            result.data[i] = m1.data[0]-m2.data[i];
-//        }
-//        return *result;
-//    } else if (m2.row==1&&m2.col==1){
-//        sadMat<T> result = new sadMat<T>(m1.row,m1.col);
-//        for (int i = 0; i < m1.row*m1.col; ++i) {
-//            result.data[i] = m1.data[i]-m2.data[0];
-//        }
-//        return *result;
-//    } else if (m1.row == m2.row && m1.col == m2.col){
-//        sadMat<T> result = new sadMat<T>(m1.row,m1.col);
-//        for (int i = 0; i < m1.row*m1.col; ++i) {
-//            result.data[i] = m1.data[i]-m2.data[i];
-//        }
-//        return *result;
-//    } else{
-//        return NULL;
-//    }
-//}
-
-//template<typename T,typename T2>
-//sadMat<T> &operator*(const sadMat<T> &m1, const sadMat<T2> &m2) {
-//    if(m1.row==1&&m1.col==1){
-//        sadMat<T> result = new sadMat<T>(m2.row,m2.col);
-//        for (int i = 0; i < m2.row*m2.col; ++i) {
-//            result.data[i] = m1.data[0]*m2.data[i];
-//        }
-//        return *result;
-//    } else if (m2.row==1&&m2.col==1){
-//        sadMat<T> result = new sadMat<T>(m1.row,m1.col);
-//        for (int i = 0; i < m1.row*m1.col; ++i) {
-//            result.data[i] = m1.data[i]*m2.data[0];
-//        }
-//        return *result;
-//    } else if (m1.col == m2.row ){
-//        sadMat<T> result = new sadMat<T>(m1.row,m2.col);
-//        for (int i = 0; i < result.row; ++i) {
-//            for (int j = 0; j < result.col; ++j) {
-//                for (int k = 0; k < m2.row; ++k) {
-//                    result.data[i*result.col+j]+=m1.data[i*m1.col+k]*m2.data[k*m2.col+j];
-//                }
-//            }
-//        }
-//        return *result;
-//    } else{
-//        return NULL;
-//    }
-//}
-
-//template<typename T>
-//sadMat<T> &sadMat<T>::operator+(const sadMat<T> &m) {
-//    if (m.row==1&&m.col==1){
-//        sadMat<T> *result = new sadMat<T>(row,col, false);
-//        for (int i = 0; i < row*col; ++i) {
-//            result->data[i] = m.data[0]+data[i];
-//        }
-//        return *result;
-//    } else if(row == m.row&&col==m.col){
-//        sadMat<T> *result = new sadMat<T>(row,col, false);
-//        for (int i = 0; i < row*col; ++i) {
-//            result->data[i] = m.data[i]+data[i];
-//        }
-//        return *result;
-//    } else{
-//        sadMat<T> *result = new sadMat<T>();
-//        return *result;
-//    }
-//}
-
-//template<typename T,typename T1>
-//sadMat<T> &operator+(T1 n1, const sadMat<T> &m2) {
-//    auto *result = new sadMat<T>(m2.row,m2.col, false);
-//    for (int i = 0; i < m2.row*m2.col; ++i) {
-//        result->data[i] =
-//    }
-//}
 
